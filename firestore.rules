@@ -1,0 +1,64 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidRadioShow(data) {
+      return data.keys().hasAll(['title', 'duration', 'summary', 'date', 'host', 'coverImage', 'audioUrl', 'transcript', 'userId', 'createdAt'])
+        && data.title is string && data.title.size() <= 200
+        && data.duration is number
+        && data.summary is string && data.summary.size() <= 2000
+        && data.date is string && data.date.size() <= 50
+        && data.host is string && data.host.size() <= 100
+        && data.coverImage is string && data.coverImage.size() <= 1000
+        && data.audioUrl is string && data.audioUrl.size() <= 1000
+        && (data.keys().hasAny(['notesUrl']) ? (data.notesUrl is string && data.notesUrl.size() <= 1000) : true)
+        && data.transcript is list && data.transcript.size() <= 1000
+        && (data.transcript.size() > 0 ? (data.transcript[0].speaker is string && data.transcript[0].text is string) : true)
+        && data.userId is string && data.userId == request.auth.uid
+        && data.createdAt == request.time;
+    }
+
+    match /users/{userId}/shows/{showId} {
+      allow read: if isVerifiedUser() && userId == request.auth.uid;
+      allow create: if isVerifiedUser()
+        && isValidId(userId)
+        && isValidId(showId)
+        && userId == request.auth.uid
+        && isValidRadioShow(incoming())
+        && incoming().keys().size() <= 11;
+      allow update: if isVerifiedUser()
+        && isValidId(userId)
+        && isValidId(showId)
+        && userId == request.auth.uid
+        && isValidRadioShow(incoming())
+        && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'duration', 'summary', 'date', 'host', 'coverImage', 'audioUrl', 'notesUrl', 'transcript'])
+        && incoming().userId == existing().userId
+        && incoming().createdAt == existing().createdAt;
+      allow delete: if isVerifiedUser() && userId == request.auth.uid;
+    }
+  }
+}
