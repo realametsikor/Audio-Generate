@@ -137,6 +137,12 @@ def main():
         default="radio show",
         help="The format of the show (e.g. radio show, podcast, documentary, audiobook)",
     )
+    parser.add_argument(
+        "--hosts",
+        type=int,
+        default=1,
+        help="The number of hosts for the show (1, 2, or 3)",
+    )
     args = parser.parse_args()
 
     client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "dummy-key"))
@@ -164,6 +170,26 @@ def main():
     ).replace(
         "- Target ~450-500 words total.",
         f"- Target ~{target_words} words total."
+    )
+
+    hosts_str = "**Host**: Paul (in the studio) — a calm, measured British moderator broadcasting from a London studio. Professional, intellectual, and polite."
+    if args.hosts == 2:
+        hosts_str = """**Hosts**: 
+- Paul (in the studio) — a calm, measured British moderator. Professional, intellectual, and polite.
+- Sarah (in the studio) — a sharp, witty, and deeply knowledgeable tech journalist with an American accent."""
+    elif args.hosts == 3:
+        hosts_str = """**Hosts**: 
+- Paul (in the studio) — a calm, measured British moderator. Professional, intellectual, and polite.
+- Sarah (in the studio) — a sharp, witty, and deeply knowledgeable tech journalist with an American accent.
+- Mark (in the studio) — a cynical, humorous, and highly experienced systems engineer with an American accent.
+Make sure the hosts banter with each other as well as interviewing callers."""
+
+    modified_base_prompt = modified_base_prompt.replace(
+        "**Host**: Paul (in the studio) — a calm, measured British moderator broadcasting from a London studio. Professional, intellectual, and polite.",
+        hosts_str
+    ).replace(
+        "Host Paul MUST always introduce a new caller by name and location before they speak for the first time.",
+        "One of the hosts MUST always introduce a new caller by name and location before they speak for the first time."
     )
 
     # Make style prompt durations dynamic

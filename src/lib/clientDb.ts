@@ -1,5 +1,6 @@
-import { db, auth } from '../firebase';
+import { db, auth, storage } from '../firebase';
 import { collection, doc, setDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp } from 'firebase/firestore';
+import { ref, uploadString, getDownloadURL, deleteObject } from 'firebase/storage';
 
 export enum OperationType {
   CREATE = 'create',
@@ -57,11 +58,32 @@ export async function saveUserShow(show: any): Promise<void> {
   const showId = show.title.replace(/[^a-zA-Z0-9_\-]/g, '');
   const path = `users/${userId}/shows/${showId}`;
   try {
+    let finalAudioUrl = show.audioUrl;
+    let finalCoverImage = show.coverImage;
+
+    if (finalAudioUrl && finalAudioUrl.startsWith('data:audio/')) {
+      const audioRef = ref(storage, `users/${userId}/shows/${showId}/audio.mp3`);
+      await uploadString(audioRef, finalAudioUrl, 'data_url');
+      finalAudioUrl = await getDownloadURL(audioRef);
+    }
+
+    if (finalCoverImage && finalCoverImage.startsWith('data:image/')) {
+      const coverRef = ref(storage, `users/${userId}/shows/${showId}/cover.png`);
+      await uploadString(coverRef, finalCoverImage, 'data_url');
+      finalCoverImage = await getDownloadURL(coverRef);
+    }
+
     const showData = {
       ...show,
+      audioUrl: finalAudioUrl,
+      coverImage: finalCoverImage,
       userId,
       createdAt: serverTimestamp()
     };
+    if (showData.isBase64Encoded) {
+        delete showData.isBase64Encoded;
+    }
+
     await setDoc(doc(db, 'users', userId, 'shows', showId), showData);
   } catch (err) {
     handleFirestoreError(err, OperationType.WRITE, path);
@@ -98,6 +120,17 @@ export async function deleteUserShow(title: string): Promise<void> {
   const path = `users/${userId}/shows/${showId}`;
   try {
     await deleteDoc(doc(db, 'users', userId, 'shows', showId));
+    
+    try {
+        const audioRef = ref(storage, `users/${userId}/shows/${showId}/audio.mp3`);
+        await deleteObject(audioRef);
+    } catch (e) {}
+    
+    try {
+        const coverRef = ref(storage, `users/${userId}/shows/${showId}/cover.png`);
+        await deleteObject(coverRef);
+    } catch (e) {}
+    
   } catch (err) {
     handleFirestoreError(err, OperationType.DELETE, path);
   }

@@ -567,7 +567,7 @@ async function startServer() {
     // Run background cleanup list whenever a new show is request to optimize disk space
     cleanUpOldGenerations();
 
-    const { topic, duration = "15", mood = "Informative", format = "Radio Show", generationId } = req.body;
+    const { topic, duration = "15", mood = "Informative", format = "Radio Show", hosts = "1", generationId } = req.body;
 
     if (process.env.NODE_ENV !== "production") {
       console.log(`[generate-show] Running in dev mode, skipping daily quota tracking.`);
@@ -584,7 +584,7 @@ async function startServer() {
       }
     }
 
-    const prompt = `Generate a ${format.toLowerCase()} about: ${topic}. Target duration: ${duration} minutes. Set the tone and style of the show to: ${mood}. Follow the workflow in AGENTS.md to research, write, generate speech and music, mix the audio, and generate the metadata.`;
+    const prompt = `Generate a ${format.toLowerCase()} about: ${topic}. Target duration: ${duration} minutes. Set the tone and style of the show to: ${mood}. The show should have exactly ${hosts} host(s). Follow the workflow in AGENTS.md to research, write, generate speech and music, mix the audio, and generate the metadata.`;
 
     res.writeHead(200, {
       "Content-Type": "text/event-stream",

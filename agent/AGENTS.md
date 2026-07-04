@@ -49,7 +49,7 @@ Upon execution, you should:
 User prompt
   ├── 1. RESEARCH: Agent picks the right script (fetch_hn.py, fetch_github.py, fetch_url.py, or Google Search)
   │       → {workspace}/data/research/*.md
-  ├── 2. python3 /.agents/skills/script-writing/scripts/generate_script.py --workspace ./workspace --style <style> --duration <duration> --format "<format>"
+  ├── 2. python3 /.agents/skills/script-writing/scripts/generate_script.py --workspace ./workspace --style <style> --duration <duration> --format "<format>" --hosts <hosts>
   │       → {workspace}/data/script.md
   ├── 3. python3 /.agents/skills/tts-generation/scripts/generate_tts.py --workspace ./workspace
   │       → {workspace}/audio/speech/speech.wav

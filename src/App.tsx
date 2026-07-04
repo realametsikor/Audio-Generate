@@ -147,6 +147,7 @@ export default function App() {
   const [targetDuration, setTargetDuration] = useState('3');
   const [targetMood, setTargetMood] = useState('Informative');
   const [targetFormat, setTargetFormat] = useState('Radio Show');
+  const [targetHosts, setTargetHosts] = useState('1');
   const [selectedCategory, setSelectedCategory] = useState<'tech' | 'culture' | 'news'>('tech');
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -991,7 +992,7 @@ export default function App() {
     seek(newTime);
   };
 
-  const handleGenerate = async (e?: React.FormEvent, overridePrompt?: string, overrideDuration?: string, overrideMood?: string, overrideFormat?: string) => {
+  const handleGenerate = async (e?: React.FormEvent, overridePrompt?: string, overrideDuration?: string, overrideMood?: string, overrideFormat?: string, overrideHosts?: string) => {
     if (e) e.preventDefault();
     if (!auth.currentUser && !IS_DEV) {
       await handleSignIn();
@@ -1001,6 +1002,7 @@ export default function App() {
     const d = overrideDuration ?? targetDuration;
     const m = overrideMood ?? targetMood;
     const f = overrideFormat ?? targetFormat;
+    const h = overrideHosts ?? targetHosts;
     if (!p.trim()) return;
 
     if (quota && quota.remaining <= 0 && !IS_DEV) {
@@ -1012,6 +1014,7 @@ export default function App() {
     if (overrideDuration) setTargetDuration(overrideDuration);
     if (overrideMood) setTargetMood(overrideMood);
     if (overrideFormat) setTargetFormat(overrideFormat);
+    if (overrideHosts) setTargetHosts(overrideHosts);
 
     setIsGenerating(true);
     setView('generating');
@@ -1047,6 +1050,7 @@ export default function App() {
         duration: d,
         mood: m,
         format: f,
+        hosts: h,
         generationId
       });
 
@@ -1058,6 +1062,7 @@ export default function App() {
           duration: d,
           mood: m,
           format: f,
+          hosts: h,
           generationId
         }),
         signal: abortControllerRef.current.signal
@@ -1742,6 +1747,20 @@ export default function App() {
                             <option value="Documentary" className="bg-neutral-900 text-white">Documentary</option>
                             <option value="Audiobook" className="bg-neutral-900 text-white">Audiobook</option>
                             <option value="News Report" className="bg-neutral-900 text-white">News Report</option>
+                          </select>
+                        </div>
+
+                        {/* Hosts Selector */}
+                        <div className="flex items-center gap-2 bg-white/[0.04] border border-white/5 rounded-full px-3 py-1.5 hover:bg-white/[0.08] transition-all relative focus-within:ring-2 focus-within:ring-io-blue focus-within:border-transparent">
+                          <span className="text-[11px] font-bold text-white/40 uppercase tracking-wider">Hosts:</span>
+                          <select
+                            value={targetHosts}
+                            onChange={(e) => setTargetHosts(e.target.value)}
+                            className="bg-transparent border-none text-[11px] font-bold text-white/70 focus:outline-none focus:ring-0 cursor-pointer appearance-none pr-1"
+                          >
+                            <option value="1" className="bg-neutral-900 text-white">1 Host</option>
+                            <option value="2" className="bg-neutral-900 text-white">2 Hosts</option>
+                            <option value="3" className="bg-neutral-900 text-white">3 Hosts</option>
                           </select>
                         </div>
 

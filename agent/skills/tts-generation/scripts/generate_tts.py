@@ -42,6 +42,8 @@ warnings.filterwarnings("ignore", message="Interactions usage is experimental")
 # Voice mapping — each speaker gets a unique Gemini TTS voice
 VOICE_MAP = {
     "Paul": "Puck",     # Host — studio quality male voice
+    "Sarah": "Kore",    # Co-Host 1 - female voice
+    "Mark": "Charon",   # Co-Host 2 - male voice
 }
 
 FEMALE_VOICES = ["Kore"]
@@ -55,6 +57,16 @@ PROFILES = {
         "profile": "# AUDIO PROFILE: Paul\n## Role: Community Radio Host\n## Persona: Professional, warm, and engaging British radio host.",
         "scene": "## THE SCENE: The London Studio\nA professional studio in London. Paul is sitting comfortably, speaking into a high-quality microphone with a warm and authoritative tone.",
         "notes": "### DIRECTOR'S NOTES\nStyle: Professional, warm, engaging, and measured.\nPacing: Steady but dynamic.\nAccent: British English accent as heard in London, England.",
+    },
+    "Sarah": {
+        "profile": "# AUDIO PROFILE: Sarah\n## Role: Community Radio Co-Host\n## Persona: Sharp, witty, and deeply knowledgeable tech journalist.",
+        "scene": "## THE SCENE: The London Studio\nA professional studio in London. Sarah is sitting comfortably next to Paul.",
+        "notes": "### DIRECTOR'S NOTES\nStyle: Conversational, energetic, and articulate.\nPacing: Fast and engaged.\nAccent: American English accent.",
+    },
+    "Mark": {
+        "profile": "# AUDIO PROFILE: Mark\n## Role: Community Radio Co-Host\n## Persona: Cynical, humorous, and highly experienced systems engineer.",
+        "scene": "## THE SCENE: The London Studio\nA professional studio in London. Mark is sitting opposite to Paul and Sarah.",
+        "notes": "### DIRECTOR'S NOTES\nStyle: Deadpan, informative, and slightly sarcastic.\nPacing: Measured, deliberate.\nAccent: American English accent.",
     },
     "default_caller": {
         "profile": "# AUDIO PROFILE: Caller\n## Role: Tech-savvy individual calling in to a radio show.\n## Persona: Nerdy, conversational, not a professional broadcaster.",
