@@ -47,8 +47,8 @@ VOICE_MAP = {
 FEMALE_VOICES = ["Kore"]
 MALE_VOICES = ["Charon", "Fenrir", "Puck"]
 
-MAX_RETRIES = 3
-MAX_WORKERS = 8
+MAX_RETRIES = 5
+MAX_WORKERS = 4
 
 PROFILES = {
     "Paul": {
@@ -178,7 +178,7 @@ def process_turn(client, turn_index, speaker, text, voice, accent, segments_dir,
         except Exception as e:
             print(f"    [{turn_index}] Attempt {attempt}/{MAX_RETRIES} failed: {e}")
             if attempt < MAX_RETRIES:
-                time.sleep(2 * attempt)  # Exponential-ish backoff
+                time.sleep(4 * attempt)  # Exponential-ish backoff
     else:
         print(f"    [{turn_index}] ✗ All {MAX_RETRIES} attempts failed, skipping")
         return (turn_index, None)

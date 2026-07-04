@@ -56,16 +56,9 @@ Write a ~3-minute radio script based on the research provided. The show has:
 - Clean Wrap Up: Do a clean wrap up at the end of the show without promising future segments.
 - The research may come from any source (news, blogs, GitHub, papers, forums). Adapt your script to fit whatever content is provided.
 
-**CONTENT SAFETY — strictly off-limits:**
+**CONTENT SAFETY:**
 - Do NOT use any profanity, cuss words, or explicit language.
-- Do NOT discuss politics, political parties, politicians, elections, legislation, or government policy.
-- Do NOT discuss international politics, geopolitics, wars, conflicts, sanctions, or diplomacy.
-- Do NOT discuss race, ethnicity, racial issues, stereotypes, or discrimination.
-- Do NOT discuss religion, religious beliefs or practices.
-- Do NOT discuss historical controversies (colonialism, slavery, genocide, etc.).
-- Do NOT discuss gender/sexuality culture wars or immigration policy.
-- If a research topic touches any of the above, skip it or focus only on the technical aspects.
-- Keep the tone light, nerdy, and strictly focused on technology, software, science, and engineering."""
+"""
 
 STYLE_PROMPTS = {
     "debate": """

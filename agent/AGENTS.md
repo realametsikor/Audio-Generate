@@ -40,7 +40,8 @@ Upon execution, you should:
 7. **Generate Cover Image** — use `cover-image-generation` skill to create a 1:1 cover image based on the generated metadata.
 
 > [!IMPORTANT]
-> When providing the final summary to the user, do NOT include markdown links or URLs to the generated files or scripts (e.g. `[fetch_hn.py](file:///.agents...)`). Just use the plain file name (e.g. `fetch_hn.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name.
+> - **CRITICAL**: You MUST execute steps 2 through 7 in a SINGLE `code_execution` call by chaining them with `;` (e.g. `python3 .../generate_script.py ... ; python3 .../generate_tts.py ... ; python3 .../generate_music.py ... ; python3 .../mix_audio.py ... ; python3 .../generate_metadata.py ... ; python3 .../generate_image.py ...`). DO NOT execute them one by one. DO NOT stop if a step has warnings or minor errors.
+> - When providing the final summary to the user, do NOT include markdown links or URLs to the generated files or scripts (e.g. `[fetch_hn.py](file:///.agents...)`). Just use the plain file name (e.g. `fetch_hn.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name.
 
 ## Architecture
 
@@ -111,29 +112,12 @@ Run strictly in order:
 
 ## Content Rules
 
+### Content Guidelines
+
 - **Duration**: Respect the duration specified in the user's prompt (up to 60 minutes). Pass `--duration` to the scripts that support it.
 - **Format**: Respect the format specified in the user's prompt (e.g. Radio show, Podcast, Documentary, Audiobook). Adapt the host, callers, and structure to fit the requested format.
-- **Source**: Whatever the user asked for. The research must be grounded in real content — never fabricate stories or data.
-- **NO FAKE DATA**: All stories, insights, and perspectives must come from real research gathered in step 1.
-
-### Topics to AVOID — strictly off-limits
-
-Do NOT select, discuss, or reference any of the following:
-
-- **Politics** — no political parties, politicians, elections, legislation, government policy, political commentary
-- **International politics** — no geopolitics, wars, conflicts, sanctions, territorial disputes, diplomacy
-- **Race and ethnicity** — no racial topics, stereotypes, discrimination, identity politics
-- **Religion** — no religious debates, beliefs, practices, or commentary
-- **Historical controversies** — no colonialism, slavery, genocide, or historically divisive events
-- **Gender and sexuality debates** — no culture war topics
-- **Immigration** — no immigration policy or debate
-- **Anything potentially offensive** — when in doubt, skip it
-
-If the user asks for any of these topics directly, inform the user you can not proceed and stop.
-
-### Topics that ARE safe
-
-Stick to: **technology, software, programming, open source, AI/ML, science, engineering, developer tools, startups, product launches, creative projects, and tech culture.**
+- **Source**: Whatever the user asked for. The research must be grounded in real content.
+- **NO FAKE DATA**: All stories, insights, and perspectives must come from real research gathered in step 1. You may generate content on any topic requested by the user, including politics, government, and national history.
 
 ## File Locations
 

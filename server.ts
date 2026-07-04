@@ -780,19 +780,25 @@ async function startServer() {
               }
             }
 
-            if (showNotes) {
-              if (audioBase64) {
-                showNotes.audioUrl = `data:audio/mp3;base64,${audioBase64}`;
-              }
-              if (coverBase64) {
-                showNotes.coverImage = `data:image/png;base64,${coverBase64}`;
-              }
-              showNotes.isBase64Encoded = true;
-              sendEvent({ type: "show_data", data: showNotes });
-            } else {
-              console.error("show_notes.json was not found in the extracted tar archive");
-              sendEvent({ type: "error", message: "Successfully extracted the archive but show_notes.json of the show was missing." });
+            if (!showNotes) {
+              console.warn("show_notes.json was not found in the extracted tar archive. Using fallback metadata.");
+              showNotes = {
+                show_title: "Generated Audio",
+                show_duration: "Unknown",
+                two_sentence_summary: "This is a generated audio file. Metadata generation was incomplete.",
+                date_of_generation: new Date().toISOString().split('T')[0],
+                timecoded_transcript: []
+              };
             }
+
+            if (audioBase64) {
+              showNotes.audioUrl = `data:audio/mp3;base64,${audioBase64}`;
+            }
+            if (coverBase64) {
+              showNotes.coverImage = `data:image/png;base64,${coverBase64}`;
+            }
+            showNotes.isBase64Encoded = true;
+            sendEvent({ type: "show_data", data: showNotes });
           } else {
             const errBody = await res.text();
             console.error("Failed to download snapshot:", errBody);
